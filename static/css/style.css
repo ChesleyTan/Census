@@ -1,0 +1,41 @@
+body {
+    font-family: Open Sans;
+    min-width: 500px;
+}
+ul.flashed_messages_list {
+    margin: 0 auto;
+    text-align: center;
+    list-style: none;
+    font-weight: bolder;
+    font-size: 20px;
+    padding: 0;
+}
+ul.list_centered_plain {
+    margin: 0 auto;
+    text-align: center;
+    list-style: none;
+    font-size: 20px;
+    padding: 0;
+}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.center-all {
+    margin: 0 auto;
+    text-align: center;
+}
+.center {
+    margin: 0 auto;
+}
+.error {
+    color: rgba(200, 50, 50, 150);
+}
+.success {
+    color: rgba(50, 200, 50, 150);
+}
+

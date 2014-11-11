@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block bodycontent %}
+
+<div class="center-all noselect">
+    <h1>{{ data_dict['STATE'] }}</h1>
+    {% set i = 0 %}
+    {% for category in data_dict['CATEGORIES'] %}
+        <h1>{{ category }}</h1>
+        <h1>This State: {{ data_dict['STATE_VALUES'][i] }}</h1>
+        <h1>Average: {{ data_dict['AVERAGE_VALUES'][i] }}</h1>
+        <h1>Median: {{ data_dict['MEDIAN_VALUES'][i] }}</h1>
+        <h1>Top 10</h1>
+        {% set u = 1 %}
+        {% for row in data_dict['TOP_10_VALUES'][i] %}
+            <h2>{{u}}. {{row[-1]}} - {{row[0]}}</h2>
+            {% set u = u + 1 %}
+        {% endfor %}
+        {% set i = i + 1 %}
+    {% endfor %}
+</div>
+
+{% endblock bodycontent %} 
