@@ -6,15 +6,15 @@
 {% block bodycontent %}
 
 <div class="center-all noselect">
-    <h1>{{ data_dict['STATE'] }}</h1>
+    <h1 class="state_title">{{ data_dict['STATE'] }}</h1>
     {% set i = 0 %}
     {% for category in data_dict['CATEGORIES'] %}
-        <h2><u>{{ category }}</u></h2>
+        <h2 class="category_title"><u>{{ category }}</u></h2>
         <h3>This State: {{ data_dict['STATE_VALUES'][i] }}</h3>
         <h3>Average: {{ data_dict['AVERAGE_VALUES'][i] }}</h3>
         <h3>Median: {{ data_dict['MEDIAN_VALUES'][i] }}</h3>
         {{ data_dict['JS_BAR_GRAPH_COMPARE_WITH_AVERAGE_MEDIAN'][i]|safe }}
-        <h2><u>Top 10</u></h2>
+        <h2 class="top_10_title"><u>Top 10</u></h2>
         {% set u = 1 %}
         {% for row in data_dict['TOP_10_VALUES'][i] %}
             <h3>{{u}}. {{row[-1]}} - {{row[0]}}</h3>

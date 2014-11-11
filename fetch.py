@@ -420,7 +420,7 @@ def substituteStateNames(summary):
 
 def generateBarGraphJS_compare_average_median(chart_id, category, category_value_for_this_state, average_value, median_value):
     script = """
-    <canvas id="{chart_id}" width="400" height="400"></canvas>
+    <canvas id="{chart_id}" width="500" height="500"></canvas>
     <script>
         var ctx = document.getElementById("{chart_id}").getContext("2d");
         var data = {{
@@ -429,9 +429,9 @@ def generateBarGraphJS_compare_average_median(chart_id, category, category_value
                 {{
                     label: "",
                     fillColor: "rgba(220,220,220,0.5)",
-                    strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "rgba(220,220,220,0.75)",
-                    highlightStroke: "rgba(220,220,220,1)",
+                    strokeColor: "rgba(200,200,200,0.5)",
+                    highlightFill: "rgba(26, 188, 156, 1)",
+                    highlightStroke: "rgba(26, 188, 156, 0.7)",
                     data: [{this_state}, {average_value}, {median_value}]
                 }}
             ]
@@ -447,7 +447,7 @@ def generateBarGraphJS_compare_average_median(chart_id, category, category_value
 
 def generateBarGraphJS_top_10(chart_id, category, states, states_values):
     script = """
-    <canvas id="{chart_id}" width="400" height="400"></canvas>
+    <canvas id="{chart_id}" width="500" height="500"></canvas>
     <script>
         var ctx = document.getElementById("{chart_id}").getContext("2d");
         var data = {{
@@ -456,9 +456,9 @@ def generateBarGraphJS_top_10(chart_id, category, states, states_values):
                 {{
                     label: "{category}",
                     fillColor: "rgba(220,220,220,0.5)",
-                    strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "rgba(220,220,220,0.75)",
-                    highlightStroke: "rgba(220,220,220,1)",
+                    strokeColor: "rgba(220,220,220,0.3)",
+                    highlightFill: "rgba(52, 152, 219, 1)",
+                    highlightStroke: "rgba(52, 152, 219, 0.6)",
                     data: [\"{states_values}\"]
                 }}
             ]

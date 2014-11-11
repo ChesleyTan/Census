@@ -1,6 +1,8 @@
 body {
     font-family: Open Sans;
     min-width: 500px;
+    background-color: #121212;
+    color: #e7e7e7;
 }
 ul.flashed_messages_list {
     margin: 0 auto;
@@ -37,5 +39,14 @@ ul.list_centered_plain {
 }
 .success {
     color: rgba(50, 200, 50, 150);
+}
+.state_title {
+    color: rgba(231, 76, 60, 1);
+}
+.category_title {
+    color: rgba(46, 204, 113, 1);
+}
+.top_10_title {
+    color: rgba(155, 89, 182, 1);
 }
 
