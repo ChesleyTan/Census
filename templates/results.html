@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block includes %}
+<script src="{{ url_for("static", filename="Chart.js/Chart.js") }}"></script>
+{% endblock %}
 
 {% block bodycontent %}
 
@@ -6,16 +9,18 @@
     <h1>{{ data_dict['STATE'] }}</h1>
     {% set i = 0 %}
     {% for category in data_dict['CATEGORIES'] %}
-        <h1>{{ category }}</h1>
-        <h1>This State: {{ data_dict['STATE_VALUES'][i] }}</h1>
-        <h1>Average: {{ data_dict['AVERAGE_VALUES'][i] }}</h1>
-        <h1>Median: {{ data_dict['MEDIAN_VALUES'][i] }}</h1>
-        <h1>Top 10</h1>
+        <h2><u>{{ category }}</u></h2>
+        <h3>This State: {{ data_dict['STATE_VALUES'][i] }}</h3>
+        <h3>Average: {{ data_dict['AVERAGE_VALUES'][i] }}</h3>
+        <h3>Median: {{ data_dict['MEDIAN_VALUES'][i] }}</h3>
+        {{ data_dict['JS_BAR_GRAPH_COMPARE_WITH_AVERAGE_MEDIAN'][i]|safe }}
+        <h2><u>Top 10</u></h2>
         {% set u = 1 %}
         {% for row in data_dict['TOP_10_VALUES'][i] %}
-            <h2>{{u}}. {{row[-1]}} - {{row[0]}}</h2>
+            <h3>{{u}}. {{row[-1]}} - {{row[0]}}</h3>
             {% set u = u + 1 %}
         {% endfor %}
+        {{ data_dict['JS_BAR_GRAPH_TOP_10'][i]|safe }}
         {% set i = i + 1 %}
     {% endfor %}
 </div>

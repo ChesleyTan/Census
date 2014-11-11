@@ -1,6 +1,7 @@
 import urllib2
 import json
 import locale
+import base64
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -356,6 +357,17 @@ def indexForState(s):
     ''' Get state index given state name '''
     return STATES.values().index(s) + 1
 
+def getJSON(categories):
+    ''' Get JSON data '''
+    if type(categories) != list: 
+        raise Exception("getJSON(categories): List expected for argument categories. Got %s instead." % type(categories))
+    global QUERY_CATEGORIES
+    QUERY_CATEGORIES = categories
+    url_base = "http://api.census.gov/data/2010/sf1?key=%s" % key
+    url_query = "&get=%s&for=state:*" % ','.join(QUERY_CATEGORIES)
+    # index 0 contains the query categories metadata, so we can ignore it
+    return json.loads(urllib2.urlopen(url_base + url_query).read())[1:]
+
 def getSummary(state, categories):
     ''' Get summary of data for categories '''
     if type(categories) != list: 
@@ -369,33 +381,98 @@ def getSummary(state, categories):
     summary['AVERAGE_VALUES'] = []
     summary['MEDIAN_VALUES'] = []
     summary['TOP_10_VALUES'] = []
+    summary['JS_BAR_GRAPH_COMPARE_WITH_AVERAGE_MEDIAN'] = []
+    summary['JS_BAR_GRAPH_TOP_10'] = []
+    chart_id_prefix_average_median = "a" 
+    chart_id_prefix_top_10 = "b"
+    iteration = 0
     for category in categories:
-        summary['CATEGORIES'].append(CATEGORY_FULLNAMES[category])
-        summary['STATE_VALUES'].append(categoryValueForState(data_dict, category, stateIndex))
-        summary['AVERAGE_VALUES'].append(average(data_dict, category))
-        summary['MEDIAN_VALUES'].append(median(data_dict, category))
-        summary['TOP_10_VALUES'].append(top10(data_dict, category))
+        iteration += 1
+        category_name = CATEGORY_FULLNAMES[category]
+        category_value = categoryValueForState(data_dict, category, stateIndex)
+        average_value = average(data_dict, category)
+        median_value = median(data_dict, category)
+        top_10_values = top10(data_dict, category)
+        states_names = []
+        states_values = []
+        category_index = QUERY_CATEGORIES.index(category)
+        for state in top_10_values:
+            states_names.append(STATES[int(state[-1])])
+            states_values.append(state[category_index])
+        summary['CATEGORIES'].append(category_name)
+        summary['STATE_VALUES'].append(category_value)
+        summary['AVERAGE_VALUES'].append(average_value)
+        summary['MEDIAN_VALUES'].append(median_value)
+        summary['TOP_10_VALUES'].append(top_10_values)
+        summary['JS_BAR_GRAPH_COMPARE_WITH_AVERAGE_MEDIAN'].append(generateBarGraphJS_compare_average_median(chart_id_prefix_average_median + str(iteration), category_name, category_value, average_value, median_value))
+        summary['JS_BAR_GRAPH_TOP_10'].append(generateBarGraphJS_top_10(chart_id_prefix_top_10+ str(iteration), category_name, states_names, states_values))
     substituteStateNames(summary)
     return summary
-
-def getJSON(categories):
-    ''' Get JSON data '''
-    if type(categories) != list: 
-        raise Exception("getJSON(categories): List expected for argument categories. Got %s instead." % type(categories))
-    global QUERY_CATEGORIES
-    QUERY_CATEGORIES = categories
-    url_base = "http://api.census.gov/data/2010/sf1?key=%s" % key
-    url_query = "&get=%s&for=state:*" % ','.join(QUERY_CATEGORIES)
-    # index 0 contains the query categories metadata, so we can ignore it
-    return json.loads(urllib2.urlopen(url_base + url_query).read())[1:]
 
 def substituteStateNames(summary):
     ''' Replace state indices with state names '''
     for i, category_values in enumerate(summary['TOP_10_VALUES']):
         for u, values in enumerate(category_values):
-            category_values[u][-1] = STATES[int(values[-1])]
+            try:
+                category_values[u][-1] = STATES[int(values[-1])]
+            except ValueError:
+                pass
+
+def generateBarGraphJS_compare_average_median(chart_id, category, category_value_for_this_state, average_value, median_value):
+    script = """
+    <canvas id="{chart_id}" width="400" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("{chart_id}").getContext("2d");
+        var data = {{
+            labels: [\"{label}\", "Average", "Median"],
+            datasets: [
+                {{
+                    label: "",
+                    fillColor: "rgba(220,220,220,0.5)",
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data: [{this_state}, {average_value}, {median_value}]
+                }}
+            ]
+        }};
+        var {chart_id} = new Chart(ctx).Bar(data);
+    </script>
+    """
+    return script.format(chart_id=chart_id,\
+                         label=category,\
+                         this_state=category_value_for_this_state,\
+                         average_value=average_value,\
+                         median_value=median_value)
+
+def generateBarGraphJS_top_10(chart_id, category, states, states_values):
+    script = """
+    <canvas id="{chart_id}" width="400" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("{chart_id}").getContext("2d");
+        var data = {{
+            labels: [\"{labels}\"],
+            datasets: [
+                {{
+                    label: "{category}",
+                    fillColor: "rgba(220,220,220,0.5)",
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data: [\"{states_values}\"]
+                }}
+            ]
+        }};
+        var {chart_id} = new Chart(ctx).Bar(data);
+    </script>
+    """
+    return script.format(chart_id=chart_id,\
+                         category=category,\
+                         labels="\", \"".join(states),\
+                         states_values="\", \"".join(states_values))
+
 
 if __name__ == "__main__":
-    dict = getSummary("New York", [TOTAL_POPULATION])
+    dict = getSummary("New York", [TOTAL_POPULATION, HOUSEHOLDS])
     print dict
 

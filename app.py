@@ -12,7 +12,7 @@ def index():
 def results():
     # TODO remove testing demo
     state = "New York"
-    categories = [fetch.TOTAL_POPULATION]
+    categories = [fetch.TOTAL_POPULATION, fetch.HOUSEHOLDS]
     return render_template("results.html", data_dict=fetch.getSummary(state, categories), page_title="Results")
 
 if __name__ == "__main__":
