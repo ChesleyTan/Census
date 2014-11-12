@@ -1,30 +1,28 @@
 {% extends "base.html" %}
 {% block includes %}
 {% endblock %}
-
 {% block bodycontent %}
-
-<div class="center-all">
+<div class="center-all noselect">
 <h1>Census Data Analyzer</h1>
-<form>
-{% set i = 1 %}
-{% for criteria in [1,2,3,4,5] %}
-    <h2>Criteria {{i}}: <select name="criteria{{i}}">
-        <option value="None">--</option>
-        {% for category in categories %}
-            <option value="{{category}}">{{category}}</option>
+<form method="POST" action="{{url_for("results")}}"}>
+    {% for criteria in [1,2,3,4,5] %}
+        <h2>Criteria {{criteria}}: <select name="criteria{{criteria}}">
+            <option value="None">--</option>
+            {% for category in categories %}
+                <option value="{{category}}">{{categories[category]}}</option>
+            {% endfor %}
+        </select></h2>
+    {% endfor %}
+
+    <label>State Name: </label>
+    <select name="state">
+        {% for state in states %}
+            <option value="{{state}}">{{state}}</option>
         {% endfor %}
-    </select></h2>
-    {% set i = i + 1 %}
-{% endfor %}
-
-<h2><br><br>State Name: <select name="state">
-{% for state in states %}
-    <option value="{{state}}">{{state}}</option>
-{% endfor %}
+    </select>
+    <br/>
+    <br/>
+    <input type="submit"/>
 </form>
-
-<br><input type="submit" name="submit" value="View"></input>
-
 {% endblock bodycontent %} 
 
