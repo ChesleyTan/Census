@@ -4,7 +4,27 @@
 
 {% block bodycontent %}
 
-<div class="center-all noselect">
-</div>
+<div class="center-all">
+<h1>Census Data Analyzer</h1>
+<form>
+{% set i = 1 %}
+{% for criteria in [1,2,3,4,5] %}
+    <h2>Criteria {{i}}: <select name="criteria{{i}}">
+        <option value="None">--</option>
+        {% for category in categories %}
+            <option value="{{category}}">{{category}}</option>
+        {% endfor %}
+    </select></h2>
+    {% set i = i + 1 %}
+{% endfor %}
+
+<h2><br><br>State Name: <select name="state">
+{% for state in states %}
+    <option value="{{state}}">{{state}}</option>
+{% endfor %}
+</form>
+
+<br><input type="submit" name="submit" value="View"></input>
 
 {% endblock bodycontent %} 
+
